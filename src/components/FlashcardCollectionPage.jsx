@@ -86,8 +86,8 @@ export default function FlashcardCollectionPage() {
               >
                 {type === 'A' ? (
                   <>
-                    <h3 className="text-3xl bg-frth inline py-1 px-2 rounded font-bold mb-2 select-none">{card.char || '—'}</h3>
-                    <p className="text-gray-700 mb-1 mt-1  select-none"><strong>Reading:</strong> {card.reading || 'N/A'}</p>
+                    <h3 className="text-5xl bg-frth inline py-1 px-2 rounded font-black mb-2 select-none">{card.char || '—'}</h3>
+                    <p className="text-gray-700 mb-1 mt-3 select-none"><strong>Reading:</strong> {card.reading || 'N/A'}</p>
                     <p className="text-gray-700 select-none"><strong>Meaning:</strong> {card.meaning || 'N/A'}</p>
                   </>
                 ) : (
