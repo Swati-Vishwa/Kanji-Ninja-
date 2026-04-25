@@ -74,7 +74,7 @@ export default function FlashcardCollectionPage() {
 
       <div className="container mx-auto p-4">
         <h1 className="text-3xl font-bold text-sec mb-6 text-start font-poppins ">
-          {collectionTitle}<AccountTreeIcon sx={{fontSize: 40 }}/>
+          {collectionTitle}{" "}<AccountTreeIcon sx={{fontSize: 40 }}/>
         </h1>
 
         {flashcards.length > 0 ? (
@@ -122,7 +122,7 @@ export default function FlashcardCollectionPage() {
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-pale p-6 border-4 border-sec rounded-lg shadow-xl max-w-sm mx-4 animate-pop ">
+          <div className="bg-pale p-6 border-4 border-sec rounded-lg shadow-xl w-sm mx-4 animate-pop ">
             <h3 className="text-xl text-center font-semibold mb-4 text-gray-800 select-none">
               Are you sure?
             </h3>

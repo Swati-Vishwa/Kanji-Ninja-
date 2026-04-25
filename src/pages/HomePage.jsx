@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Navbar from '../components/Navbar';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import CardSelectPopUp from '../components/CardSelectPopUp';
+import CategoryIcon from '@mui/icons-material/Category';
 
 
 export default function HomePage() {
@@ -23,15 +24,15 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-pale relative pb-20">
-      <Navbar  />
+      <Navbar />
 
       <div className="container mx-auto p-4">
-        <h2 className="text-4xl font-bold text-tri mb-6 text-start font-montserrat select-none">Your Collections</h2>
+        <h2 className="flex justify-start items-center gap-2 text-4xl font-bold text-tri mb-6 text-start font-montserrat select-none">Your Collections <CategoryIcon sx={{fontSize: 34}}/></h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-20 md:px-10">
           {/* Flashcard A */}
           <div
-            className="flex gap-4 justify-center items-center bg-white px-6 py-4 rounded-lg shadow-md border border-gray-200 cursor-pointer select-none hover:shadow-lg hover:scale-105 transition"
+            className="flex gap-4 justify-center items-center md:justify-start bg-white px-6 py-4 rounded-lg shadow-md border border-gray-200 cursor-pointer select-none hover:shadow-lg hover:scale-105 transition"
             onClick={() => handleViewCollection('A')}
           >
             <img src="/CardA.jpg" alt="Flashcard A" className="rounded-md w-full max-w-[110px] mb-4 border select-none img-no-right-click " />
@@ -43,7 +44,7 @@ export default function HomePage() {
 
           {/* Flashcard B */}
           <div
-            className="flex gap-4 justify-center items-center bg-white px-6 py-4 rounded-lg shadow-md border border-gray-200 cursor-pointer select-none  hover:shadow-lg hover:scale-105 transition"
+            className="flex gap-4 justify-center items-center md:justify-start bg-white px-6 py-4 rounded-lg shadow-md border border-gray-200 cursor-pointer select-none  hover:shadow-lg hover:scale-105 transition"
             onClick={() => handleViewCollection('B')}
           >
             <img src="/CardB.jpg" alt="Flashcard B" className="rounded-md w-full max-w-[110px] mb-4 border select-none img-no-right-click" />

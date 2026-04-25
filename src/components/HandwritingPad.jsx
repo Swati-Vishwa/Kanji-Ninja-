@@ -10,17 +10,27 @@ export default function HandwritingPad({ initialStrokes = [], onStrokesChange })
   const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
   const [strokes, setStrokes] = useState([]);
 
+  // Fix 1: Handle Resolution on Mount/Resize
   useEffect(() => {
+    const canvas = canvasRef.current;
+    // Set internal resolution to match displayed CSS size
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    
     if (initialStrokes.length > 0) {
       setStrokes(initialStrokes);
       redrawCanvas(initialStrokes);
     }
-  }, [initialStrokes]);
+  }, []); // Run once on mount
 
   const redrawCanvas = (allStrokes) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
     allStrokes.forEach((stroke) => {
       ctx.strokeStyle = stroke.color;
       ctx.lineWidth = stroke.width;
@@ -38,22 +48,22 @@ export default function HandwritingPad({ initialStrokes = [], onStrokesChange })
 
   const getCoordinates = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
-    if (e.touches && e.touches.length > 0) {
-      return {
-        x: e.touches[0].clientX - rect.left,
-        y: e.touches[0].clientY - rect.top,
-      };
-    } else {
-      return {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      };
-    }
+    // Used clientX/Y and subtracted the bounding rect to get precise local coords
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top,
+    };
   };
 
   const currentStroke = useRef(null);
 
   const startDrawing = (e) => {
+    // Prevents scrolling when touching the canvas
+    if (e.touches) e.preventDefault(); 
+    
     setIsDrawing(true);
     const start = getCoordinates(e);
     setLastPosition(start);
@@ -104,48 +114,42 @@ export default function HandwritingPad({ initialStrokes = [], onStrokesChange })
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    
+    // Non-passive listeners to allow e.preventDefault() for touch
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseout', stopDrawing);
-    canvas.addEventListener('touchstart', startDrawing);
-    canvas.addEventListener('touchmove', draw);
+    window.addEventListener('mouseup', stopDrawing); 
+    canvas.addEventListener('touchstart', startDrawing, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
     canvas.addEventListener('touchend', stopDrawing);
-    canvas.addEventListener('touchcancel', stopDrawing);
 
     return () => {
       canvas.removeEventListener('mousedown', startDrawing);
       canvas.removeEventListener('mousemove', draw);
-      canvas.removeEventListener('mouseup', stopDrawing);
-      canvas.removeEventListener('mouseout', stopDrawing);
+      window.removeEventListener('mouseup', stopDrawing);
       canvas.removeEventListener('touchstart', startDrawing);
       canvas.removeEventListener('touchmove', draw);
       canvas.removeEventListener('touchend', stopDrawing);
-      canvas.removeEventListener('touchcancel', stopDrawing);
     };
   }, [isDrawing, lastPosition, penColor, lineWidth]);
 
   return (
-    <div className="w-[300px] h-[400px] flex flex-col items-center mt-3">
-      <div className="w-[280px] relative top-7 z-20 flex justify-between">
-        <button onClick={clearCanvas}>
+    <div className="w-[300px] md:w-[240px] flex flex-col items-center mt-3">
+      <div className="relative z-20 top-7 left-1 md:left-0 w-full flex justify-between px-2">
+        <button onClick={clearCanvas} className="hover:scale-110 transition-transform">
           <CloseIcon sx={{ fontSize: 20, color: '#E17879' }} />
         </button>
       </div>
 
-      <div className="w-[290px] h-[290px]">
-        <canvas
-          ref={canvasRef}
-          width={290}
-          height={290}
-          className="w-[290px] h-[290px] bg-white rounded-md border-2 border-sec"
-          style={{ touchAction: 'none' }}
-        />
-      </div>
+      <canvas
+        ref={canvasRef}
+        className="w-[290px] h-[290px] md:w-[240px] md:h-[240px] bg-white rounded-md border-2 border-sec shadow-inner"
+        style={{ touchAction: 'none' }}
+      />
 
-      <div className="w-[260px] flex justify-center items-center gap-10 mt-2">
+      <div className="w-full flex justify-center items-center gap-4 mt-3 px-2">
         <Slider
-          sx={{color: '#CDE2CA'}}
+          sx={{ color: '#CDE2CA', flexGrow: 1 }}
           size="small"
           value={lineWidth}
           min={1}
@@ -157,7 +161,7 @@ export default function HandwritingPad({ initialStrokes = [], onStrokesChange })
           type="color"
           value={penColor}
           onChange={(e) => setPenColor(e.target.value)}
-          className="w-10 h-6"
+          className="w-13 h-6 rounded cursor-pointer border-none bg-transparent"
         />
       </div>
     </div>
